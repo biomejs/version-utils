@@ -11,7 +11,9 @@ import { fetchBiomeVersions } from "./versions";
  * version of Biome cannot be detected, this function will return the specified
  * fallback version, or undefined
  */
-export const detectFromDependencies = async (workingDir: string) => {
+export const detectFromDependencies = async (
+	workingDir: string,
+): Promise<string | undefined> => {
 	return (
 		(await detectFromNpmLockfile(`${workingDir}/package-lock.json`, false)) ??
 		(await detectFromPnpmLockfile(`${workingDir}/pnpm-lock.yaml`, false)) ??
@@ -32,7 +34,7 @@ export const detectFromDependencies = async (workingDir: string) => {
 export const detectFromNpmLockfile = async (
 	packageLockJsonPath: string,
 	shouldThrow = true,
-) => {
+): Promise<string | undefined> => {
 	const lockfileContents = await readFile(packageLockJsonPath, shouldThrow);
 
 	if (!lockfileContents) {
@@ -59,7 +61,7 @@ export const detectFromNpmLockfile = async (
 export const detectFromPnpmLockfile = async (
 	pnpmLockYamlPath: string,
 	shouldThrow = true,
-) => {
+): Promise<string | undefined> => {
 	const lockfileContents = await readFile(pnpmLockYamlPath, shouldThrow);
 
 	if (!lockfileContents) {
@@ -89,7 +91,7 @@ export const detectFromPnpmLockfile = async (
 export const detectFromYarnLockfile = async (
 	yarnLockPath: string,
 	shouldThrow = true,
-) => {
+): Promise<string | undefined> => {
 	const lockfileContents = await readFile(yarnLockPath, shouldThrow);
 
 	if (!lockfileContents) {
@@ -123,7 +125,7 @@ export const detectFromYarnLockfile = async (
 export const detectFromPackageJson = async (
 	packageJsonPath: string,
 	shouldThrow = true,
-) => {
+): Promise<string | undefined> => {
 	const packageJsonContents = await readFile(packageJsonPath, shouldThrow);
 
 	if (!packageJsonContents) {
@@ -161,7 +163,7 @@ export const detectFromPackageJson = async (
 				return undefined;
 			}
 
-			return semver.maxSatisfying(versions, versionSpecifier);
+			return semver.maxSatisfying(versions, versionSpecifier) ?? undefined;
 		}
 	} catch {
 		return undefined;
