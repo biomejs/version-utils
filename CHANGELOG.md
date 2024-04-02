@@ -10,11 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### <!-- 0 -->🚀  Features
 - Add `getLatestVersion` and `getAllVersions` by @nhedger in [#2](https://github.com/biomejs/version-utils/pull/2)
 
-#### <!-- 7 -->⚙️ Miscellaneous Tasks
-- Clean version by @nhedger
-- Strip version prefix by @nhedger
-- Fix release workflow by @nhedger
-
 ## [0.1.1] - 2024-04-02
 ### Details
 #### <!-- 1 -->🐛 Bug Fixes
