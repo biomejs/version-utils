@@ -34,7 +34,7 @@ jobs:
         id: next-version
         run: |
           PREFIXED_VERSION=$(git-cliff --config .git-cliff/changelog.toml --unreleased --bumped-version 2>/dev/null)
-          echo "version=${PREFIXED_VERSION#v} >> $GITHUB_OUTPUT
+          echo "version=${PREFIXED_VERSION#v}" >> $GITHUB_OUTPUT
       - name: Patch package.json version
         run: bun scripts/patch-version.ts "${{ steps.next-version.outputs.version }}"
       - name: Build
