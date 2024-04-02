@@ -1,7 +1,7 @@
 import { readFile as nodeReadFile } from "node:fs/promises";
 import semver from "semver";
 import yaml from "yaml";
-import { fetchBiomeVersions } from "./versions";
+import { getAllVersions } from "./versions";
 
 /**
  * Detects the version of Biome from the dependencies of the project.
@@ -155,7 +155,7 @@ export const detectFromPackageJson = async (
 		// versions from the npm registry and return the latest version that
 		// satisfies the range.
 		if (semver.validRange(versionSpecifier)) {
-			const versions = await fetchBiomeVersions();
+			const versions = await getAllVersions();
 
 			// If we are unable to fetch the list of Biome versions, we return
 			// undefined.
