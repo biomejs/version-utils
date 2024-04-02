@@ -32,7 +32,9 @@ jobs:
           version: 2.2.0
       - name: Generate next version
         id: next-version
-        run: echo "version=$(git-cliff --config .git-cliff/changelog.toml --unreleased --bumped-version 2>/dev/null)" >> $GITHUB_OUTPUT
+        run: |
+          PREFIXED_VERSION=$(git-cliff --config .git-cliff/changelog.toml --unreleased --bumped-version 2>/dev/null)
+          echo "version=${PREFIXED_VERSION#v} >> $GITHUB_OUTPUT
       - name: Patch package.json version
         run: bun scripts/patch-version.ts "${{ steps.next-version.outputs.version }}"
       - name: Build
