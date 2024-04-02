@@ -9,12 +9,12 @@ import {
 } from "../../src";
 
 const mocks = {
-	fetchBiomeVersions: mock(),
+	getAllVersions: mock(),
 };
 
 mock.module("../../src/versions", () => {
 	return {
-		fetchBiomeVersions: mocks.fetchBiomeVersions,
+		getAllVersions: mocks.getAllVersions,
 	};
 });
 
@@ -150,7 +150,7 @@ describe("detector", () => {
 	it("retrieves the latest version in range from the npm registry", async () => {
 		// We mock the response from the NPM registry so the test is deterministic
 		// even if the version of the package changes
-		mocks.fetchBiomeVersions.mockResolvedValue(["1.6.2", "1.6.3", "1.6.4"]);
+		mocks.getAllVersions.mockResolvedValue(["1.6.4", "1.6.3", "1.6.2"]);
 
 		const version = await detectFromPackageJson(
 			join(__dirname, "../fixtures/npm/devDependencies/package.json"),
