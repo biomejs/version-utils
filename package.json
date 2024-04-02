@@ -1,7 +1,7 @@
 {
 	"name": "@biomejs/version-utils",
 	"type": "module",
-	"version": "v0.1.1",
+	"version": "0.1.1",
 	"packageManager": "bun@1.1.0",
 	"author": {
 		"name": "Nicolas Hedger",
