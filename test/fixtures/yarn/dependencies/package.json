@@ -1,0 +1,7 @@
+{
+	"name": "fixture",
+	"devDependencies": {
+		"@biomejs/biome": "^1.6.3"
+	},
+	"packageManager": "yarn@4.1.1"
+}

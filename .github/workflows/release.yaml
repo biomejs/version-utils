@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Verify provenance
+        run: npm audit signatures
+      - name: Setup git-cliff
+        uses: kenji-miyake/setup-git-cliff@v2
+        with:
+          version: 2.2.0
+      - name: Generate next version
+        id: next-version
+        run: echo "version=$(git-cliff --config .git-cliff/changelog.toml --unreleased --bumped-version 2>/dev/null)" >> $GITHUB_OUTPUT
+      - name: Patch package.json version
+        run: bun scripts/patch-version.ts "${{ steps.next-version.outputs.version }}"
+      - name: Build
+        run: bun run build
+      - name: Package
+        run: npm pack
+      - name: Update changelog
+        run: git-cliff --config .git-cliff/changelog.toml --unreleased --bump --prepend CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push the changelog
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: ./CHANGELOG.md ./package.json
+          message: "chore(release): prepare v${{ steps.next-version.outputs.version }} release"
+          push: true
+          default_author: github_actions
+      - name: Config npm
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Release
+        run: npm publish
+      - name: Generate release notes
+        run: git-cliff --config .git-cliff/release-notes.toml --unreleased --output RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          name: v${{ steps.next-version.outputs.version }}
+          tag_name: v${{ steps.next-version.outputs.version }}

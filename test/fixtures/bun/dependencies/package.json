@@ -1,0 +1,6 @@
+{
+	"name": "fixture",
+	"dependencies": {
+		"@biomejs/biome": "1.6.3"
+	}
+}
