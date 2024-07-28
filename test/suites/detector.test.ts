@@ -6,6 +6,7 @@ import {
 	detectFromPackageJson,
 	detectFromPnpmLockfile,
 	detectFromYarnLockfile,
+	getAllVersions,
 } from "../../src";
 
 const mocks = {

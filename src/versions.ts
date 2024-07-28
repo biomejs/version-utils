@@ -16,7 +16,9 @@ export const getLatestVersion = async (): Promise<string | undefined> => {
 /**
  * Fetches the list of Biome versions from the npm registry.
  */
-export const getAllVersions = async (): Promise<string[] | undefined> => {
+export const getAllVersions = async (
+	includePrereleases = true,
+): Promise<string[] | undefined> => {
 	try {
 		const response = await request(
 			"https://registry.npmjs.org/@biomejs/biome",
@@ -31,10 +33,18 @@ export const getAllVersions = async (): Promise<string[] | undefined> => {
 		const body = (await response.body.json()) as any;
 
 		const unsortedVersions = Object.keys(body.versions).map((version) => {
-			return semver.coerce(version);
+			return semver.coerce(version, { includePrerelease: true });
 		});
 
-		return rsort(unsortedVersions as SemVer[]).map(
+		const filteredVersions = unsortedVersions.filter((version) => {
+			if (!includePrereleases) {
+				return version?.prerelease.length === 0;
+			}
+
+			return true;
+		});
+
+		return rsort(filteredVersions as SemVer[]).map(
 			(version) => version.version,
 		);
 	} catch {
