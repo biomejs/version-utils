@@ -4,9 +4,11 @@ import { request } from "undici";
 /**
  * Retrieves the latest version of Biome from the npm registry.
  */
-export const getLatestVersion = async (): Promise<string | undefined> => {
+export const getLatestVersion = async (
+	channel: "stable" | "nightly" = "stable",
+): Promise<string | undefined> => {
 	try {
-		const versions = await getAllVersions();
+		const versions = await getAllVersions(channel === "nightly");
 		return versions?.[0];
 	} catch {
 		return undefined;
